@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Редактирование клиента</h2>
+  <form method="post">
+    {% csrf_token %}
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" value="{{ client.email }}" required><br><br>
+    <label for="full_name">Полное имя:</label>
+    <input type="text" id="full_name" name="full_name" value="{{ client.full_name }}" required><br><br>
+    <label for="comment">Комментарий:</label>
+    <textarea id="comment" name="comment" required>{{ client.comment }}</textarea><br><br>
+    <button type="submit">Обновить</button>
+  </form>
+{% endblock %}

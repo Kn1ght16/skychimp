@@ -1,0 +1,45 @@
+{{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Панель управления рассылкой</h1>
+  <p>Отметка времени последней ошибки внешней службы: {{ last_error_timestamp }}</p>
+
+  <h2>Статистика рассылок</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Рассылки</th>
+        <th>Отправлено</th>
+        <th>Ошибка</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for mailing in mailings %}
+        <tr>
+          <td>{{ mailing }}</td>
+          <td>{{ mailing.stats.sent }}</td>
+          <td>{{ mailing.stats.error }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="3">No mailings available</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Лист рассылки</h2>
+  <ul>
+    {% for mailing in mailings %}
+      <li>{{ mailing }}</li>
+    {% empty %}
+      <li>Рассылки недоступны</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Создать рассылку</h2>
+  <form method="post" action="{% url 'mailing:create' %}">
+    {% csrf_token %}
+    <button type="submit">Создать</button>
+  </form>
+{% endblock %}

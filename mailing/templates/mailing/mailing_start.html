@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Начать рассылку</h1>
+  <form method="post">
+    {% csrf_token %}
+    <input type="submit" value="Start">
+  </form>
+
+  {% if status == 'отправлено' %}
+    <p class="success-message">Рассылка успешно выполнена</p>
+  {% elif status == 'ошибка' %}
+    <p class="error-message">Произошла ошибка при выполнении рассылки</p>
+  {% endif %}
+{% endblock %}

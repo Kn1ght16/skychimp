@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Создать рассылку</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <h2>Добавить сообщение</h2>
+    <label for="id_subject">Тема:</label>
+    <input type="text" name="subject" id="id_subject">
+
+    <label for="id_body">Сообщение:</label>
+    <textarea name="body" id="id_body"></textarea>
+
+    <button type="submit">Создать</button>
+  </form>
+{% endblock %}

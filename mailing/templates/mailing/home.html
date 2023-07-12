@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Добро пожаловать на главную страницу</h2>
+    <h3>Статистика рассылок</h3>
+    <p>Всего рассылок: {{ total_mailings }}</p>
+    <p>Активных рассылок: {{ active_mailings }}</p>
+    <p>Уникальных клиентов: {{ unique_clients }}</p>
+    
+    <h3>Случайные статьи блога</h3>
+    <ul>
+        {% for article in random_articles %}
+            <li>{{ article.title }}</li>
+        {% empty %}
+            <li>Нет статей для отображения</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
