@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Статьи блога</h2>
+    {% for article in articles %}
+        <div>
+            <h3>{{ article.title }}</h3>
+            <p>{{ article.content }}</p>
+            <img src="{{ article.image.url }}" alt="{{ article.title }}">
+        </div>
+        {% if user.is_authenticated and user == article.author.user or user.is_staff %}
+            <a href="{% url 'mailing:blog_update' pk=article.pk %}">Редактировать</a>
+        {% endif %}
+    {% empty %}
+        <p>Нет статей для отображения.</p>
+    {% endfor %}
+    <a href="{% url 'mailing:blog_create' %}">Создать статью</a>
+{% endblock %}

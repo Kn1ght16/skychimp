@@ -14,5 +14,5 @@
     {% empty %}
       <li>Рассылки недоступны</li>
     {% endfor %}
-  </ul>
+  <a href="{% url 'mailing:mailing_create' %}" class="btn btn-outline-primary">Создать рассылку</a>
 {% endblock %}

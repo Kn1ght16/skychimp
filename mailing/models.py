@@ -1,9 +1,10 @@
+import os
 from datetime import datetime
-
 from django.db import models
-from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from django.core.mail import EmailMultiAlternatives
 
 User = get_user_model()
 
@@ -73,15 +74,28 @@ class Mailing(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='пользователь')
     clients = models.ManyToManyField(Client, verbose_name='клиенты')
+    message = models.ForeignKey('Message', on_delete=models.CASCADE, verbose_name='сообщение', null=True, blank=True)
 
     def send_messages(self):
         clients = self.clients.all()
-        message = Message.objects.first()
+        message = self.message
         for client in clients:
-            sent_datetime = datetime.now()
+            sent_datetime = timezone.now()
             try:
+                # Генерация текстового и HTML-сообщения
+                text_message = render_to_string('mailing/email.txt', {'message': message})
+                html_message = render_to_string('mailing/email.html', {'message': message})
+
                 # Отправка сообщения
-                send_mail(message.subject, message.body, 'your_email@example.com', [client.email])
+                email = EmailMultiAlternatives(
+                    message.subject,
+                    text_message,
+                    'your_email@example.com',
+                    [client.email]
+                )
+                email.attach_alternative(html_message, 'text/html')
+                email.send()
+
                 status = 'отправлено'
                 server_response = 'Сообщение отправлено успешно'
             except Exception as e:
@@ -97,6 +111,8 @@ class Mailing(models.Model):
                 mailing=self,
                 message=message
             )
+
+        return status  # Возвращаем статус выполнения
 
     def start_scheduled_mailing(self):
         now = datetime.now().time()
@@ -136,3 +152,16 @@ class DeliveryAttempt(models.Model):
     class Meta:
         verbose_name = 'попытка доставки'
         verbose_name_plural = 'попытки доставки'
+
+
+class BlogArticle(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    image = models.ImageField(upload_to='blog')
+    views = models.PositiveIntegerField(default=0)
+    pub_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'статья блога'
+        verbose_name_plural = 'статьи блога'
